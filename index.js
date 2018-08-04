@@ -54,6 +54,8 @@ app.post( '/api/persons', ( request, response ) => {
 
 	if ( body.name === undefined || body.number === undefined ) {
 		return response.status( 400 ).json( { error: 'name or number missing' } );
+	} else if ( persons.find( person => person.name === body.name ) ) {
+		return response.status( 400 ).json( { error: 'name must be unique' } );
 	}
 
 	const person = {
@@ -72,9 +74,7 @@ app.get( '/info', ( request, response ) => {
 	response.send( body );
 } );
 
-const generateId = ( max ) => {
-	Math.floor( Math.random() * Math.floor( max ) );
-};
+const generateId = ( max ) => Math.floor( Math.random() * Math.floor( max ) );
 
 const PORT = 3001;
 app.listen( PORT, () => {
