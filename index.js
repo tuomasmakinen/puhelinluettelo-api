@@ -28,6 +28,11 @@ app.get( '/api/persons', ( request, response ) => {
 	response.json( persons );
 } );
 
+app.get( '/info', ( request, response ) => {
+	let body = `<p>Puhelinluettelossa on ${ persons.length } henkilön tiedot</p><br/><p>${ new Date() }</p>`;
+	response.send( body );
+} );
+
 const PORT = 3001;
 app.listen( PORT, () => {
 	console.log( `Server running on port ${ PORT }` );
