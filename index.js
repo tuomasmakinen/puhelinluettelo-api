@@ -1,6 +1,7 @@
 const express = require( 'express' );
 const bodyParser = require( 'body-parser' );
 const morgan = require( 'morgan' );
+const Person = require( './modules/person' );
 
 morgan.token( 'body', ( request, response ) => {
 	return JSON.stringify( request.body );
@@ -35,8 +36,20 @@ let persons = [
 	}
 ];
 
+const formatPerson = ( person ) => {
+	return {
+		name: person.name,
+		number: person.number,
+		id: person._id
+	}
+};
+
 app.get( '/api/persons', ( request, response ) => {
-	response.json( persons );
+	Person
+		.find({})
+		.then( persons => {
+			response.json( persons.map( formatPerson ) );
+		} );
 } );
 
 app.get( '/api/persons/:id', ( request, response ) => {
