@@ -41,6 +41,9 @@ app.get( '/api/persons', ( request, response ) => {
 		.find({})
 		.then( persons => {
 			response.json( persons.map( Person.format ) );
+		} )
+		.catch( error => {
+			console.log( error );
 		} );
 } );
 
@@ -71,15 +74,19 @@ app.post( '/api/persons', ( request, response ) => {
 		return response.status( 400 ).json( { error: 'name must be unique' } );
 	}
 
-	const person = {
+	const person = new Person( {
 		name: body.name,
-		number: body.number,
-		id: generateId( 1000 )
-	};
+		number: body.number
+	} );
 
-	persons = persons.concat( person );
-
-	response.json( person );
+	person
+		.save()
+		.then( savedPerson => {
+			response.json( Person.format( savedPerson ) );
+		} )
+		.catch( error => {
+			console.log( error );
+		} );
 } );
 
 app.get( '/info', ( request, response ) => {
