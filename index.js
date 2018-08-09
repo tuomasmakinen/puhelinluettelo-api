@@ -48,14 +48,15 @@ app.get( '/api/persons', ( request, response ) => {
 } );
 
 app.get( '/api/persons/:id', ( request, response ) => {
-	const id = Number( request.params.id );
-	const person = persons.find( person => person.id === id );
-
-	if ( person ) {
-		response.json( person );
-	} else {
-		response.status( 404 ).end();
-	}
+	Person
+		.findById( request.params.id )
+		.then( person => {
+			response.json( Person.format( person ) );
+		} )
+		.catch( error => {
+			console.log( error );
+			response.status( 400 ).send({ error: 'malformed id' });
+		} );
 } );
 
 app.delete( '/api/persons/:id', ( request, response ) => {
@@ -113,8 +114,18 @@ app.put( '/api/persons/:id', ( request, response ) => {
 } );
 
 app.get( '/info', ( request, response ) => {
-	let body = `<p>Puhelinluettelossa on ${ persons.length } henkilön tiedot</p><br/><p>${ new Date() }</p>`;
-	response.send( body );
+	Person
+		.countDocuments()
+		.then( count => {
+			let body = `
+				<p>Puhelinluettelossa on ${ count } henkilön tiedot</p>
+				<p>${ new Date() }</p>`;
+			response.send( body );
+		} )
+		.catch( error => {
+			console.log( error );
+			response.status( 400 ).send({ error: 'haloo?' });
+		} );
 } );
 
 const generateId = ( max ) => Math.floor( Math.random() * Math.floor( max ) );
