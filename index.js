@@ -75,8 +75,6 @@ app.post( '/api/persons', ( request, response ) => {
 
 	if ( body.name === undefined || body.number === undefined ) {
 		return response.status( 400 ).json( { error: 'name or number missing' } );
-	} else if ( persons.find( person => person.name === body.name ) ) {
-		return response.status( 400 ).json( { error: 'name must be unique' } );
 	}
 
 	const person = new Person( {
@@ -84,13 +82,21 @@ app.post( '/api/persons', ( request, response ) => {
 		number: body.number
 	} );
 
-	person
-		.save()
-		.then( savedPerson => {
-			response.json( Person.format( savedPerson ) );
-		} )
-		.catch( error => {
-			console.log( error );
+	Person
+		.find({ name: person.name })
+		.then( result => {
+			if ( result.length > 0 ) {
+				response.status( 400 ).json({ error: 'duplicate name' });
+			} else {
+				person
+					.save()
+					.then( savedPerson => {
+						response.json( Person.format( savedPerson ) );
+					} )
+					.catch( error => {
+						console.log( error );
+					} )
+			}
 		} );
 } );
 
