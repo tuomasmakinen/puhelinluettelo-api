@@ -1,7 +1,7 @@
 const mongoose = require( 'mongoose' );
 const Schema = mongoose.Schema;
 
-const url = 'mongodb://testuser:*********@ds111422.mlab.com:11422/puhelinluettelo-database';
+const url = process.env.MONGODB_URI;
 
 mongoose.connect( url, { useNewUrlParser: true } );
 
