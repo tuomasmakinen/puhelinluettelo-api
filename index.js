@@ -13,29 +13,6 @@ app.use( bodyParser.json() );
 app.use( morgan( ':method :url :body :status :res[content-length] - :response-time ms' ) );
 app.use( express.static( 'build' ) );
 
-let persons = [
-	{
-		id: 1,
-		name: "Arto Hellas",
-		number: "040-123456"
-	},
-	{
-		id: 2,
-		name: "Martti Tienari",
-		number: "040-123456"
-	},
-	{
-		id: 3,
-		name: "Arto Järvinen",
-		number: "040-123456"
-	},
-	{
-		id: 4,
-		name: "Lea Kutvonen",
-		number: "040-123456"
-	}
-];
-
 app.get( '/api/persons', ( request, response ) => {
 	Person
 		.find({})
@@ -95,7 +72,7 @@ app.post( '/api/persons', ( request, response ) => {
 					} )
 					.catch( error => {
 						console.log( error );
-					} )
+					} );
 			}
 		} );
 } );
@@ -133,8 +110,6 @@ app.get( '/info', ( request, response ) => {
 			response.status( 400 ).send({ error: 'haloo?' });
 		} );
 } );
-
-const generateId = ( max ) => Math.floor( Math.random() * Math.floor( max ) );
 
 const PORT = process.env.PORT || 3001;
 app.listen( PORT, () => {
